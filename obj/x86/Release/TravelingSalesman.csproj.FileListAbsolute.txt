@@ -1,0 +1,9 @@
+C:\Users\bulik\Documents\Visual Studio 2015\Projects\CS312\TSP\bin\Release\ConsoleApplication.exe.config
+C:\Users\bulik\Documents\Visual Studio 2015\Projects\CS312\TSP\bin\Release\ConsoleApplication.exe
+C:\Users\bulik\Documents\Visual Studio 2015\Projects\CS312\TSP\bin\Release\ConsoleApplication.pdb
+C:\Users\bulik\Documents\Visual Studio 2015\Projects\CS312\TSP\obj\x86\Release\TravelingSalesman.csprojResolveAssemblyReference.cache
+C:\Users\bulik\Documents\Visual Studio 2015\Projects\CS312\TSP\obj\x86\Release\TSP.mainform.resources
+C:\Users\bulik\Documents\Visual Studio 2015\Projects\CS312\TSP\obj\x86\Release\TravelingSalesman.WindowsFormsApplication1.Properties.Resources.resources
+C:\Users\bulik\Documents\Visual Studio 2015\Projects\CS312\TSP\obj\x86\Release\TravelingSalesman.csproj.GenerateResource.Cache
+C:\Users\bulik\Documents\Visual Studio 2015\Projects\CS312\TSP\obj\x86\Release\ConsoleApplication.exe
+C:\Users\bulik\Documents\Visual Studio 2015\Projects\CS312\TSP\obj\x86\Release\ConsoleApplication.pdb
