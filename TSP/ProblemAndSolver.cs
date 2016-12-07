@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.Diagnostics;
-
+using DPTSP;
+using System.Linq;
 
 namespace TSP
 {
@@ -733,18 +734,270 @@ namespace TSP
             return results;
         }
 
-
+        // good speed, bad memory
         public string[] fancySolveProblem()
         {
             string[] results = new string[3];
+            Stopwatch timer = new Stopwatch();
+            int count = 0;
+            timer.Start();
 
-            // TODO: Add your implementation for your advanced solver here.
+            double[][] costs = getCostMatrix();
+            int n = Cities.Length;
+            int npow = (int)Math.Pow(2, n);
+            double[][] C = new double[npow][];
+            C[1] = new double[n];
+            C[1][0] = 0;
+            for(int s = 2; s <= n; s++) // go through all subset sizes
+            {
+                for(int S = 3; S < npow; S+=2) // go through all subsets with city 0
+                {
+                    if(numberOfSetBits(S) == s) // |S| = s
+                    {
+                        if(C[S] == null)
+                        {
+                            C[S] = new double[n];
+                        }
+                        C[S][0] = double.MaxValue; // can't go this way
+                        for(int j = 1; j < n; j++) // go through each city (exclude 0)
+                        {
+                            int jbit = (int)Math.Pow(2, j); // get the bit for the city
+                            if((S & jbit) == jbit) // if this city is in the subset
+                            {
+                                double min = double.MaxValue;
+                                for(int i = 0; i < n; i++) // go through each city (exclude 0)
+                                {
+                                    if(i != j)
+                                    {
+                                        int ibit = (int)Math.Pow(2, i); // get the bit for the city
+                                        if((S & ibit) == ibit) // if this city is in the subset
+                                        {
+                                            int withoutj = (S & (~jbit));
+                                            double cost = C[withoutj][i] + costs[i][j];
+                                            if(cost < 0)
+                                            {
+                                                cost = double.MaxValue;
+                                            }
+                                            min = (cost < min) ? cost : min;
+                                        }
+                                    }
+                                }
+                                C[S][j] = min;
+                            }
+                        }
+                    }
+                }
+            }
 
-            results[COST] = "not implemented";    // load results into array here, replacing these dummy values
-            results[TIME] = "-1";
-            results[COUNT] = "-1";
+            int tour = npow - 1;
+            double totalCost = double.MaxValue;
+            ArrayList path = new ArrayList();
+            int end = 0;
+            while (tour != 1)
+            {
+                double min = double.MaxValue;
+                int newEnd = n + 1;
+                for(int j = 1; j < n; j++)
+                {
+                    int jbit = (int)Math.Pow(2, j);
+                    if((tour & jbit) == jbit)
+                    {
+
+                        double cost = C[tour][j] + costs[j][end];
+                        if(cost < min)
+                        {
+                            min = cost;
+                            newEnd = j;
+                            if(tour == npow - 1)
+                            {
+                                totalCost = cost;
+                            }
+                        }
+
+                    }
+                }
+                end = newEnd;
+                int endBit = (int)Math.Pow(2, end);
+                tour = (tour & (~endBit));
+                path.Add(Cities[end]);
+            }
+            path.Add(Cities[0]);
+            path.Reverse();
+            count = 1;
+
+            timer.Stop();
+            bssf = new TSPSolution(path);
+            results[COST] = totalCost.ToString();
+            results[TIME] = timer.Elapsed.ToString();
+            results[COUNT] = count.ToString();
+            return results;
+        }
+
+        int numberOfSetBits(int i)
+        {
+            i = i - ((i >> 1) & 0x55555555);
+            i = (i & 0x33333333) + ((i >> 2) & 0x33333333);
+            return (((i + (i >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
+        }
+
+        // bad speed, good memory
+        /*public string[] fancySolveProblem()
+        {
+            int count = 0;
+            string[] results = new string[3];
+            defaultSolveProblem();
+            double[][] costs = getCostMatrix();
+
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+
+            Dictionary<Memo, double> memos = new Dictionary<Memo, double>();
+            List<Subset> subsets = GetSubsets();
+
+            foreach(Subset subset in subsets)
+            {
+                Memo baseCase = new Memo(subset, 0);
+                if(subset.count() == 1)
+                {
+                    memos[baseCase] = 0;
+                }
+                else
+                {
+                    memos[baseCase] = double.MaxValue;
+                }
+            }
+
+            for(int m = 2; m <= Cities.Length; m++)
+            {
+                foreach(Subset subset in subsets)
+                {
+                    if(subset.count() == m)
+                    {
+                        List<int> S = subset.getCities();
+                        foreach(int j in S)
+                        {
+                            if(j != 0)
+                            {
+                                Memo current = new Memo(subset, j);
+                                double min = double.MaxValue;
+                                foreach(int k in S)
+                                {
+                                    if(k != j)
+                                    {
+                                        Memo sub = new Memo(subset.minus(j), k);
+                                        double cost = memos[sub] + costs[k][j];
+                                        min = (cost < min) ? cost : min;
+                                    }
+                                }
+                                memos[current] = min;                       
+                            }
+                        }
+                    }
+                }
+            }
+
+            Subset tour = new Subset(new List<int>());
+            for(int i = 0; i < Cities.Length; i++)
+            {
+                tour.add(i);
+            }
+            double totalCost = double.MaxValue;
+            Memo from = new Memo(new Subset(new List<int>(new int[] {int.MaxValue})), int.MaxValue);
+            ArrayList path = new ArrayList();
+            int end = 0;
+            bool stop = false;
+            while (tour != new Subset(new List<int>(new int[] {0})) && !stop)
+            {
+                double min = double.MaxValue;
+                List<int> cities = tour.getCities();
+                foreach (int j in cities)
+                {
+                    if(j != 0)
+                    {
+                        Memo temp = new Memo(tour, j);
+                        if(tour.count() == Cities.Length)
+                        {
+                            double cost = memos[temp] + costs[j][end];
+                            if(cost < min)
+                            {
+                                totalCost = cost;
+                                min = cost;
+                                from = temp;
+                                //stop = true;
+                            }
+                        }
+                        else
+                        {
+                            double cost = memos[temp] + costs[j][end];
+                            if(cost < min)
+                            {
+                                min = cost;
+                                from = temp;
+                            }
+                        }
+                    }
+                }
+                tour = tour.minus(from.end);
+                path.Add(Cities[from.end]);
+                end = from.end;
+                Console.WriteLine(from.end);
+            }
+            path.Add(Cities[0]);
+            path.Reverse();
+            count = 1;
+
+            timer.Stop();
+
+            bssf = new TSPSolution(path);
+            results[COST] = totalCost.ToString();    // load results into array here, replacing these dummy values
+            results[TIME] = timer.Elapsed.ToString();
+            results[COUNT] = count.ToString();
 
             return results;
+        }
+
+        public List<Subset> GetSubsets()
+        {
+            List<Subset> subsets = new List<Subset>();
+            Subset start = new Subset(new List<int>(new int[] {0}));
+            subsets.Add(start);
+            bool changed = true;
+            while(changed)
+            {
+                changed = false;
+                for(int i = 0; i < subsets.Count; i++)
+                {
+                    Subset subset = subsets[i];
+                    for(int j = 0; j < Cities.Length; j++)
+                    {
+                        if(!subset.contains(j))
+                        {
+                            Subset bigger = new Subset(subset);
+                            bigger.add(j);
+                            if(!subsets.Contains(bigger))
+                            {
+                                subsets.Add(bigger);
+                                changed = true;
+                            }
+                        }
+                    }
+                }
+            }
+            return subsets;
+        }*/
+
+        public double[][] getCostMatrix()
+        {
+            double[][] costs = new double[Cities.Length][];
+            for(int from = 0; from < Cities.Length; from++)
+            {
+                costs[from] = new double[Cities.Length];
+                for(int to = 0; to < Cities.Length; to++)
+                {
+                    costs[from][to] = (from == to) ? double.MaxValue : Cities[from].costToGetTo(Cities[to]);
+                }
+            }
+            return costs;
         }
         #endregion
     }

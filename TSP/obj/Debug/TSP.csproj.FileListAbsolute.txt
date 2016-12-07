@@ -1,0 +1,4 @@
+C:\Files\Work\School\BYU\05 Fall 2016\CS 312\06 Group TSP\CS312Group2Project\TSP\bin\Debug\WindowsFormsApplication1.exe.config
+C:\Files\Work\School\BYU\05 Fall 2016\CS 312\06 Group TSP\CS312Group2Project\TSP\obj\Debug\TSP.csprojResolveAssemblyReference.cache
+C:\Files\Work\School\BYU\05 Fall 2016\CS 312\06 Group TSP\CS312Group2Project\TSP\obj\Debug\TSP.mainform.resources
+C:\Files\Work\School\BYU\05 Fall 2016\CS 312\06 Group TSP\CS312Group2Project\TSP\obj\Debug\TSP.csproj.GenerateResource.Cache

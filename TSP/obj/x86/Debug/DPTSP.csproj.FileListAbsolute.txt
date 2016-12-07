@@ -1,0 +1,8 @@
+C:\Files\Work\School\BYU\05 Fall 2016\CS 312\06 Group TSP\CS312Group2Project\TSP\bin\Debug\WindowsApplication.exe.config
+C:\Files\Work\School\BYU\05 Fall 2016\CS 312\06 Group TSP\CS312Group2Project\TSP\bin\Debug\WindowsApplication.exe
+C:\Files\Work\School\BYU\05 Fall 2016\CS 312\06 Group TSP\CS312Group2Project\TSP\bin\Debug\WindowsApplication.pdb
+C:\Files\Work\School\BYU\05 Fall 2016\CS 312\06 Group TSP\CS312Group2Project\TSP\obj\x86\Debug\DPTSP.csprojResolveAssemblyReference.cache
+C:\Files\Work\School\BYU\05 Fall 2016\CS 312\06 Group TSP\CS312Group2Project\TSP\obj\x86\Debug\TSP.mainform.resources
+C:\Files\Work\School\BYU\05 Fall 2016\CS 312\06 Group TSP\CS312Group2Project\TSP\obj\x86\Debug\DPTSP.csproj.GenerateResource.Cache
+C:\Files\Work\School\BYU\05 Fall 2016\CS 312\06 Group TSP\CS312Group2Project\TSP\obj\x86\Debug\WindowsApplication.exe
+C:\Files\Work\School\BYU\05 Fall 2016\CS 312\06 Group TSP\CS312Group2Project\TSP\obj\x86\Debug\WindowsApplication.pdb
