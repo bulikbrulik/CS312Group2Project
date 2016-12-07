@@ -665,7 +665,8 @@ namespace TSP
         /// finds the greedy tour starting from each city and keeps the best (valid) one
         /// </summary>
         /// <returns>results array for GUI that contains three ints: cost of solution, time spent to find solution, number of solutions found during search (not counting initial BSSF estimate)</returns>
-        public string[] greedySolveProblem()
+        /// Austin's
+        /*public string[] greedySolveProblem()
         {
             string[] results = new string[3];
 
@@ -731,6 +732,52 @@ namespace TSP
             results[TIME] = System.Convert.ToString(seconds);
             results[COUNT] = System.Convert.ToString(numOfSolutions);
 
+            return results;
+        }*/
+
+        // Dallas'
+        public string[] greedySolveProblem() // O(n^2)
+        {
+            string[] results = new string[3];
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+
+            List<City> bestRoute = new List<City>();
+            double bestCost = double.MaxValue;
+            for (int i = 0; i < Cities.Length; i++)
+            {
+                List<City> tempRoute = new List<City>();
+                tempRoute.Add(Cities[i]);
+                while (tempRoute.Count < Cities.Length) // n
+                {
+                    City city = tempRoute[tempRoute.Count - 1];
+                    double min = double.MaxValue;
+                    City closest = null;
+                    foreach (City neighbor in Cities) // n
+                    {
+                        double dist = city.costToGetTo(neighbor);
+                        if (dist < min && tempRoute.IndexOf(neighbor) < 0)
+                        {
+                            min = dist;
+                            closest = neighbor;
+                        }
+                    }
+                    tempRoute.Add(closest);
+                }
+                bssf = new TSPSolution(new ArrayList(tempRoute));
+                double tempCost = costOfBssf();
+                if (tempCost < bestCost)
+                {
+                    bestCost = tempCost;
+                    bestRoute = tempRoute;
+                }
+            }
+
+            timer.Stop();
+            bssf = new TSPSolution(new ArrayList(bestRoute));
+            results[COST] = costOfBssf().ToString();    // load results into array here, replacing these dummy values
+            results[TIME] = timer.Elapsed.ToString();
+            results[COUNT] = "1";
             return results;
         }
 
